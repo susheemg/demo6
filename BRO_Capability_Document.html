@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRO Risk Oracle — Capability Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Spline+Sans:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4ED; --paper-2:#FBFAF5; --ink:#15211C; --ink-soft:#4A554F;
+    --forest:#14302A; --moss:#1A4D3C; --moss-2:#2E6A4F;
+    --navy:#1E3A5C; --gold:#B8862B; --gold-soft:#C99B5F;
+    --crimson:#8A2E3B; --plum:#5C3A6B; --line:#E1DCCE; --line-2:#D2CBB8;
+    --auto:#1A4D3C; --assist:#B8862B; --gate:#1E3A5C;
+    --sh:0 1px 2px rgba(20,48,42,.06),0 8px 28px rgba(20,48,42,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Spline Sans',sans-serif;background:var(--paper);color:var(--ink);
+    line-height:1.62;font-size:15px;-webkit-font-smoothing:antialiased;letter-spacing:-.003em}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+  h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;font-weight:500;letter-spacing:-.018em;line-height:1.1}
+  .mono{font-family:'Spline Sans Mono',monospace;letter-spacing:.02em}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold);font-weight:600}
+  p{margin:0 0 12px;color:var(--ink-soft)}
+  strong{color:var(--ink);font-weight:600}
+
+  /* ---------- COVER ---------- */
+  .cover{background:linear-gradient(160deg,#14302A 0%,#102521 55%,#0C1C18 100%);color:#EDE7D6;
+    position:relative;overflow:hidden}
+  .cover::before{content:"";position:absolute;inset:0;opacity:.13;
+    background-image:radial-gradient(circle at 1px 1px,#C99B5F 1px,transparent 0);background-size:26px 26px}
+  .cover::after{content:"";position:absolute;right:-180px;top:-120px;width:540px;height:540px;border-radius:50%;
+    background:radial-gradient(circle,rgba(184,134,43,.32),transparent 62%);filter:blur(8px)}
+  .cover-inner{position:relative;padding:84px 0 70px}
+  .brandmark{display:flex;align-items:center;gap:14px;margin-bottom:54px}
+  .brandmark .bm{width:46px;height:46px;border-radius:12px;background:linear-gradient(145deg,#C99B5F,#9c6f23);
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;
+    font-size:24px;color:#14302A;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+  .brandmark b{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:#F6F4ED;letter-spacing:-.01em}
+  .brandmark span{display:block;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.24em;
+    color:#A9B8A6;text-transform:uppercase;margin-top:2px}
+  .cover h1{font-size:62px;font-weight:340;color:#FBFAF5;max-width:14ch;margin-bottom:22px;line-height:1.02}
+  .cover h1 em{font-style:italic;color:var(--gold-soft)}
+  .cover .lede{font-size:18px;color:#CFD8CC;max-width:60ch;font-weight:300}
+  .cover-meta{display:flex;gap:40px;margin-top:48px;flex-wrap:wrap}
+  .cover-meta div{border-left:2px solid rgba(184,134,43,.5);padding-left:16px}
+  .cover-meta .k{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:#9aa89a}
+  .cover-meta .v{font-family:'Fraunces',serif;font-size:20px;color:#F6F4ED;margin-top:3px}
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:8px}
+  .sec-no{font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--gold);font-weight:600;
+    border:1px solid var(--line-2);border-radius:6px;padding:3px 9px}
+  h2{font-size:38px;font-weight:380;color:var(--forest)}
+  .sec-sub{font-size:16px;color:var(--ink-soft);max-width:74ch;margin:14px 0 38px;font-weight:300}
+
+  /* ---------- AUTOMATION LEGEND ---------- */
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 6px}
+  .flag{display:inline-flex;align-items:center;gap:8px;font-family:'Spline Sans Mono',monospace;
+    font-size:11px;font-weight:600;letter-spacing:.06em;padding:7px 13px;border-radius:999px;
+    border:1px solid var(--line-2);background:var(--paper-2);text-transform:uppercase}
+  .dot{width:11px;height:11px;border-radius:50%;flex:none}
+  .dot.auto{background:var(--auto)} .dot.assist{background:var(--assist)} .dot.gate{background:var(--gate);
+    box-shadow:inset 0 0 0 3px var(--paper-2),inset 0 0 0 4px var(--gate)}
+  .flag.auto{color:var(--auto)} .flag.assist{color:var(--gold)} .flag.gate{color:var(--navy)}
+  .legend-note{font-size:13px;color:var(--ink-soft);margin-top:14px;font-style:italic}
+
+  /* ---------- CAPABILITY MODULES ---------- */
+  .mod{margin-top:34px}
+  .mod-h{display:flex;align-items:center;gap:12px;padding-bottom:10px;margin-bottom:18px;
+    border-bottom:2px solid var(--forest)}
+  .mod-h .ix{font-family:'Spline Sans Mono',monospace;font-size:12px;color:#fff;background:var(--forest);
+    width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:600}
+  .mod-h h3{font-size:21px;color:var(--forest)}
+  .mod-h .tag{margin-left:auto;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .cap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px}
+  .cap{background:var(--paper-2);border:1px solid var(--line);border-radius:13px;padding:17px 18px;
+    box-shadow:var(--sh);position:relative;transition:transform .18s ease,box-shadow .18s ease}
+  .cap:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(20,48,42,.1),0 14px 34px rgba(20,48,42,.1)}
+  .cap .cap-flag{position:absolute;top:14px;right:14px;width:10px;height:10px;border-radius:50%}
+  .cap h4{font-size:16px;color:var(--ink);margin-bottom:6px;padding-right:18px;font-weight:600;
+    font-family:'Spline Sans',sans-serif;letter-spacing:-.01em}
+  .cap p{font-size:13px;line-height:1.5;margin:0;color:var(--ink-soft)}
+  .cap .who{margin-top:10px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.04em;
+    color:var(--moss-2);text-transform:uppercase}
+
+  /* ---------- AGENT ROSTER ---------- */
+  .agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:13px;margin-top:30px}
+  .agent{border:1px solid var(--line);border-radius:13px;padding:16px 17px;background:var(--paper-2);
+    box-shadow:var(--sh);position:relative;overflow:hidden}
+  .agent::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ac,#1A4D3C)}
+  .agent .av{width:38px;height:38px;border-radius:10px;background:var(--ac,#1A4D3C);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;
+    font-size:17px;margin-bottom:11px}
+  .agent h4{font-size:17px;font-family:'Fraunces',serif;font-weight:600;color:var(--ink)}
+  .agent .title{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.04em;
+    color:var(--ac,#1A4D3C);text-transform:uppercase;margin:2px 0 9px;font-weight:600}
+  .agent p{font-size:12.5px;line-height:1.5;margin:0}
+
+  /* ---------- PERSONA TABLE ---------- */
+  .persona{margin-top:26px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+  .persona .row{display:grid;grid-template-columns:0.9fr 1.5fr 0.7fr;gap:0;border-bottom:1px solid var(--line)}
+  .persona .row:last-child{border-bottom:none}
+  .persona .row.head{background:var(--forest);color:#EDE7D6}
+  .persona .row.head .cell{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:#C9D6C9}
+  .persona .cell{padding:15px 18px;border-right:1px solid var(--line);font-size:13.5px}
+  .persona .row.head .cell{border-right:1px solid rgba(255,255,255,.12)}
+  .persona .cell:last-child{border-right:none}
+  .persona .row:nth-child(even):not(.head){background:var(--paper-2)}
+  .persona .pname{font-family:'Fraunces',serif;font-size:16px;color:var(--forest);font-weight:600}
+  .persona .ptag{display:block;font-family:'Spline Sans Mono',monospace;font-size:9.5px;letter-spacing:.08em;
+    color:var(--ink-soft);text-transform:uppercase;margin-top:3px}
+  .persona ul{margin:0;padding-left:16px} .persona li{font-size:13px;color:var(--ink-soft);margin-bottom:3px}
+  .mini-flags{display:flex;gap:5px;flex-wrap:wrap}
+  .mini{font-family:'Spline Sans Mono',monospace;font-size:9px;font-weight:600;padding:3px 7px;border-radius:5px;
+    letter-spacing:.04em}
+  .mini.auto{background:#E3EFE6;color:var(--auto)} .mini.assist{background:#F6ECD7;color:#8a6418}
+  .mini.gate{background:#E4EAF1;color:var(--navy)}
+
+  /* ---------- LIFECYCLE ---------- */
+  .index-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 8px}
+  .ib{border:1px solid var(--line);border-radius:13px;padding:18px 20px;background:var(--paper-2);box-shadow:var(--sh)}
+  .ib .n{font-family:'Fraunces',serif;font-size:42px;font-weight:500;line-height:1}
+  .ib.auto .n{color:var(--auto)} .ib.assist .n{color:var(--gold)} .ib.gate .n{color:var(--navy)}
+  .ib .l{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin-top:8px}
+  .ib .d{font-size:12.5px;margin-top:6px;color:var(--ink-soft)}
+
+  .flow{margin-top:38px;position:relative}
+  .flow::before{content:"";position:absolute;left:27px;top:14px;bottom:14px;width:2px;
+    background:linear-gradient(var(--moss),var(--gold),var(--navy))}
+  .stage{display:grid;grid-template-columns:56px 1fr;gap:0;margin-bottom:16px;position:relative}
+  .stage .num{width:56px;display:flex;justify-content:center}
+  .stage .num span{width:40px;height:40px;border-radius:50%;background:var(--paper-2);border:2px solid var(--moss);
+    color:var(--forest);font-family:'Fraunces',serif;font-weight:600;font-size:17px;display:flex;
+    align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 8px rgba(20,48,42,.12)}
+  .stage.assist .num span{border-color:var(--gold);color:var(--gold)}
+  .stage.gate .num span{border-color:var(--navy);color:var(--navy)}
+  .stage .body{background:var(--paper-2);border:1px solid var(--line);border-radius:13px;padding:17px 20px;
+    box-shadow:var(--sh);margin-left:6px}
+  .stage .body.al{border-left:4px solid var(--moss)}
+  .stage.assist .body.al{border-left-color:var(--gold)}
+  .stage.gate .body.al{border-left-color:var(--navy)}
+  .stage .st-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:7px}
+  .stage h4{font-size:18px;font-family:'Fraunces',serif;color:var(--ink);font-weight:600}
+  .stage .badge{font-family:'Spline Sans Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.06em;
+    padding:4px 10px;border-radius:999px;text-transform:uppercase}
+  .badge.auto{background:#E3EFE6;color:var(--auto)} .badge.assist{background:#F6ECD7;color:#8a6418}
+  .badge.gate{background:#E4EAF1;color:var(--navy)}
+  .stage p{font-size:13.5px;margin:0 0 9px}
+  .stage .meta{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
+  .stage .meta b{color:var(--moss-2);font-family:'Spline Sans Mono',monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase}
+  .agent-chip{display:inline-block;font-family:'Spline Sans Mono',monospace;font-size:10px;font-weight:600;
+    padding:2px 8px;border-radius:5px;background:#EAE5D6;color:var(--forest);margin:2px 3px 0 0}
+
+  .callout{background:linear-gradient(140deg,#14302A,#0E211C);color:#E7E1D2;border-radius:16px;
+    padding:30px 34px;margin-top:40px;position:relative;overflow:hidden}
+  .callout::after{content:"";position:absolute;right:-60px;bottom:-60px;width:220px;height:220px;border-radius:50%;
+    background:radial-gradient(circle,rgba(184,134,43,.28),transparent 65%)}
+  .callout h3{font-size:24px;color:#FBFAF5;margin-bottom:10px;font-weight:420;position:relative}
+  .callout p{color:#CBD4C8;font-size:14.5px;max-width:78ch;position:relative;margin-bottom:0}
+  .callout .pct{font-family:'Fraunces',serif;font-size:15px;color:var(--gold-soft);font-style:italic}
+
+  footer{padding:40px 0 64px;color:var(--ink-soft);font-size:12px}
+  footer .mono{font-size:11px;letter-spacing:.06em}
+  .disc{border-top:1px solid var(--line);padding-top:20px;margin-top:8px;max-width:80ch}
+
+  @media (max-width:720px){
+    .cover h1{font-size:42px} h2{font-size:30px}
+    .persona .row{grid-template-columns:1fr} .persona .cell{border-right:none}
+    .index-bar{grid-template-columns:1fr}
+  }
+  @media print{
+    body{background:#fff} .cap:hover{transform:none} section{break-inside:avoid}
+    .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<header class="cover">
+  <div class="wrap cover-inner">
+    <div class="brandmark">
+      <div class="bm">B</div>
+      <div><b>BRO · Risk Oracle</b><span>Enterprise Third-Party Risk Management</span></div>
+    </div>
+    <div class="eyebrow">Capability Document</div>
+    <h1>An AI-orchestrated <em>third-party risk</em> management platform</h1>
+    <p class="lede">A single system that intakes, assesses, decides, contracts, monitors and reports on the
+      third-party estate — running the analytical lifecycle autonomously while keeping accountable
+      decisions in human hands.</p>
+    <div class="cover-meta">
+      <div><div class="k">Architecture</div><div class="v">10 AI specialists</div></div>
+      <div><div class="k">Methodology</div><div class="v">8-stage workflow</div></div>
+      <div><div class="k">Coverage</div><div class="v">Full lifecycle</div></div>
+      <div><div class="k">Assurance</div><div class="v">Hash-chained audit</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ AUTOMATION KEY ============ -->
+<section id="key">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">00</span><h2>Reading the automation flag</h2></div>
+    <p class="sec-sub">Every capability and lifecycle stage in this document carries an automation flag. The flag
+      is deliberately honest: in a regulated risk function, analytical work can be fully automated, but
+      <strong>accountable decisions remain with a named human</strong>. Three levels are used throughout.</p>
+    <div class="legend">
+      <span class="flag auto"><span class="dot auto"></span>Autonomous — AI executes end-to-end</span>
+      <span class="flag assist"><span class="dot assist"></span>AI-assisted — AI does the work, human confirms</span>
+      <span class="flag gate"><span class="dot gate"></span>Human-gated — accountable decision / sign-off</span>
+    </div>
+    <p class="legend-note">“Total automation” in this platform means the entire chain of analysis — intake,
+      scoring, scoping, due-diligence drafting, residual computation, monitoring and reporting — is performed
+      by the system without manual effort, with humans positioned only at the control gates that governance
+      and regulation require.</p>
+  </div>
+</section>
+
+<!-- ============ 1. CAPABILITIES ============ -->
+<section id="capabilities">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">01</span><h2>Capability catalogue</h2></div>
+    <p class="sec-sub">Eight capability modules span the third-party lifecycle. Deterministic risk engines hold the
+      authoritative scoring; AI agents do the reading, drafting and correlation around them. Each capability is
+      flagged by its automation level.</p>
+
+    <!-- Module A -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">A</span><h3>Intelligent intake &amp; assessment</h3><span class="tag">Front door</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>ProAssess — autonomous assessment</h4><p>A single free-text description plus any documents produces a complete risk assessment: a new or matched vendor, an engagement, inherent and residual ratings, gaps and a decision recommendation — records created across the databases automatically.</p><div class="who">Autonomous · Bro + specialists</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>BRO Chat — conversational capture</h4><p>A natural-language assessment surface that captures the full engagement picture into a structured record each time, routing each turn to the specialist that owns it.</p><div class="who">Autonomous · Bro orchestrator</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>IRQ multi-functional review</h4><p>Reviews a completed Inherent Risk Questionnaire through six independent domain lenses, producing colour-coded confidence-level scores (CLS 1–5), per-answer observations and assessor actions.</p><div class="who">AI-assisted · Sara + domain leads</div></div>
+      </div>
+    </div>
+
+    <!-- Module B -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">B</span><h3>Authoritative risk engines</h3><span class="tag">Deterministic core</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Inherent risk scoring</h4><p>Weighted exposure scored across eight domains from the engagement’s nature, data, access and geography — reproducible and independent of any language model.</p><div class="who">Autonomous · deterministic</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Proportionate control scoping</h4><p>Selects the due-diligence domains warranted by the inherent rating, so low-risk engagements are not over-assessed and high-risk ones are never under-assessed.</p><div class="who">Autonomous · deterministic</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>DDQ generation</h4><p>Generates the due-diligence questionnaire scoped to the applicable domains, ready for the vendor or evidence pack.</p><div class="who">Autonomous · deterministic</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Residual risk computation</h4><p>Residual = inherent reduced only by demonstrated control evidence; absent evidence, no mitigation is credited and residual holds at inherent.</p><div class="who">Autonomous · deterministic</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--gate)"></span><h4>Criticality designation</h4><p>Vendor- and engagement-level criticality with an authoritative human override that the engine respects and records.</p><div class="who">Human-gated · risk lead</div></div>
+      </div>
+    </div>
+
+    <!-- Module C -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">C</span><h3>Domain due diligence</h3><span class="tag">Eight specialisms</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Information security</h4><p>Certifications, external rating, penetration-test recency and breach history assessed against exposure.</p><div class="who">AI-assisted · Isaac</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Operational resilience</h4><p>BCP and exit-plan status, RTO/RPO and nth-party dependency against criticality.</p><div class="who">AI-assisted · Rhea</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Privacy &amp; data protection</h4><p>Processing role, DPA status and cross-border transfer against the data classification.</p><div class="who">AI-assisted · Priya</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Reputation &amp; conduct</h4><p>Adverse-media and conduct signals scored into a reputation verdict.</p><div class="who">AI-assisted · Mira</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Compliance &amp; regulatory</h4><p>Obligations, licensing and jurisdictional scope triggered by the engagement.</p><div class="who">AI-assisted · Connor</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Physical &amp; environmental</h4><p>Site, facility and environmental exposure where the service warrants it.</p><div class="who">AI-assisted · Finn</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>ESG &amp; ethical sourcing</h4><p>ESG rating, modern-slavery position and net-zero commitment.</p><div class="who">AI-assisted · Elara</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Financial due diligence</h4><p>Financial-health banding and distress zoning, with adverse treatment where statements are absent.</p><div class="who">Autonomous · FDD engine</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Screening — sanctions / PEP / adverse media</h4><p>Three screening checks per vendor with result, disposition and next-due date.</p><div class="who">Autonomous · Rex feed</div></div>
+      </div>
+    </div>
+
+    <!-- Module D -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">D</span><h3>Evidence &amp; documents</h3><span class="tag">Read, extract, file</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Certificate database</h4><p>Document-backed certificates: each upload is read automatically — type, issue and expiry dates extracted — and filed with its source attached and expiry tracked.</p><div class="who">Autonomous · extraction engine</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Contract management</h4><p>Minimum terms scaled to inherent risk, gap review against an uploaded contract, and existing-vs-to-add comparison — inheriting the engagement’s risk automatically.</p><div class="who">AI-assisted · contract engine</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Document store &amp; extraction</h4><p>Portable, durable storage with automatic text extraction for certificates, contracts and assessment evidence; unreadable input is flagged, never guessed.</p><div class="who">Autonomous · document spine</div></div>
+      </div>
+    </div>
+
+    <!-- Module E -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">E</span><h3>Vendor &amp; engagement master</h3><span class="tag">System of record</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Vendor 360</h4><p>A single correlated view: risk attributes, engagements, findings, certificates and posture in one dossier.</p><div class="who">Autonomous · compile &amp; correlate</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Vendor master</h4><p>Incorporation, listing, ticker, supplier category, segmentation, spend band, substitutability and ownership.</p><div class="who">AI-assisted · sourcing</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Engagement register</h4><p>Scope, service definition, value, criticality and delivery / receiving locations per engagement.</p><div class="who">AI-assisted · business lead</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Fourth-party register</h4><p>Sub-processors and nth parties mapped to vendors, with concentration flags raised automatically.</p><div class="who">Autonomous · graph</div></div>
+      </div>
+    </div>
+
+    <!-- Module F -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">F</span><h3>Monitoring &amp; performance</h3><span class="tag">Through-life</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Performance scorecards</h4><p>KPI scoring across multiple dimensions and periods, available to any enrolled vendor, not only critical ones.</p><div class="who">AI-assisted · relationship owner</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Continuous monitoring signals</h4><p>Cyber-rating, financial-health, sanctions / media and breach signals captured against the vendor profile.</p><div class="who">Autonomous · signal engine</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Revalidation engine</h4><p>Tracks certificate and assessment validity, raises expiry notices and opens issues as evidence lapses.</p><div class="who">Autonomous · scheduler</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--assist)"></span><h4>Findings, issues &amp; remediation</h4><p>Findings raised from assessments and monitoring, tracked through remediation plans to closure.</p><div class="who">AI-assisted · assessor</div></div>
+      </div>
+    </div>
+
+    <!-- Module G -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">G</span><h3>Portfolio &amp; concentration</h3><span class="tag">Leadership lens</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Supply-chain concentration network</h4><p>A force-directed graph of vendors, shared fourth parties and delivery locations — concentration surfaces as hub nodes, coloured by risk.</p><div class="who">Autonomous · analytics</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Delivery-location world map</h4><p>Geographic concentration of where engagements are delivered from, sized and coloured by exposure.</p><div class="who">Autonomous · analytics</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Management dashboards</h4><p>Risk, operations and supply-chain views: residual distribution, critical exposure, pipeline and workload.</p><div class="who">Autonomous · compile</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Management chat</h4><p>Grounded natural-language Q&amp;A over the live portfolio — answers cite the underlying data, never invented.</p><div class="who">Autonomous · grounded LLM</div></div>
+      </div>
+    </div>
+
+    <!-- Module H -->
+    <div class="mod">
+      <div class="mod-h"><span class="ix">H</span><h3>Governance &amp; assurance</h3><span class="tag">Control plane</span></div>
+      <div class="cap-grid">
+        <div class="cap"><span class="cap-flag" style="background:var(--gate)"></span><h4>Role-based access control</h4><p>Admin, assessor, business lead and vendor roles, with assessment visibility scoped to ownership.</p><div class="who">Human-gated · admin</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Tamper-evident audit trail</h4><p>Every action hash-chained into a verifiable, tamper-evident ledger.</p><div class="who">Autonomous · ledger</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--gate)"></span><h4>Review queue &amp; sign-off</h4><p>Assessments routed for review and approval before they lock.</p><div class="who">Human-gated · reviewer</div></div>
+        <div class="cap"><span class="cap-flag" style="background:var(--auto)"></span><h4>Reports &amp; notifications</h4><p>Portfolio reporting and event notifications generated from live state.</p><div class="who">Autonomous · reporting</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. PERSONAS ============ -->
+<section id="personas">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">02</span><h2>Personas &amp; the tasks they unlock</h2></div>
+    <p class="sec-sub">The platform serves two populations. A roster of ten AI specialists does the analytical work;
+      a set of accountable human roles direct it and own the decisions. Both are described below.</p>
+
+    <h3 style="font-size:22px;color:var(--forest);margin:8px 0 4px">The AI specialist roster</h3>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:6px">Ten named agents, orchestrated by Bro, each owning a domain of the assessment. They read, reason and draft — the deterministic engines hold the authoritative scores.</p>
+    <div class="agents">
+      <div class="agent" style="--ac:#14302A"><div class="av">B</div><h4>Bro</h4><div class="title">Risk Oracle — Lead</div><p>Senior TPRM orchestrator. Decides which specialist owns each turn, runs the eight stages and issues the final verdict. Direct, rigorous, never compromises on method.</p></div>
+      <div class="agent" style="--ac:#335577"><div class="av">S</div><h4>Sara</h4><div class="title">Scope &amp; Completeness</div><p>Establishes what is in and out of scope and challenges incomplete intake before any domain is scored.</p></div>
+      <div class="agent" style="--ac:#1A4D3C"><div class="av">I</div><h4>Isaac</h4><div class="title">Information Security</div><p>Assesses security posture — certifications, assurance, testing and breach history — against exposure.</p></div>
+      <div class="agent" style="--ac:#7A4F2E"><div class="av">R</div><h4>Rhea</h4><div class="title">Operational Resilience / BCM</div><p>Tests continuity, recovery objectives, exit planning and nth-party dependency.</p></div>
+      <div class="agent" style="--ac:#5C3A6B"><div class="av">P</div><h4>Priya</h4><div class="title">Privacy &amp; Data Protection</div><p>Evaluates data role, transfer mechanisms and protection obligations.</p></div>
+      <div class="agent" style="--ac:#8A2E3B"><div class="av">M</div><h4>Mira</h4><div class="title">Reputation &amp; Conduct</div><p>Surfaces adverse media, conduct and reputational signals.</p></div>
+      <div class="agent" style="--ac:#2E4A5C"><div class="av">C</div><h4>Connor</h4><div class="title">Compliance &amp; Regulatory</div><p>Maps regulatory obligations, licensing and jurisdictional reach.</p></div>
+      <div class="agent" style="--ac:#4A4A4A"><div class="av">F</div><h4>Finn</h4><div class="title">Physical &amp; Environmental</div><p>Covers site, facility and environmental risk where relevant.</p></div>
+      <div class="agent" style="--ac:#3D6B3D"><div class="av">E</div><h4>Elara</h4><div class="title">ESG &amp; Ethical Sourcing</div><p>Assesses ESG, modern slavery and ethical-sourcing posture.</p></div>
+      <div class="agent" style="--ac:#967037"><div class="av">X</div><h4>Rex</h4><div class="title">Public Data Researcher</div><p>Gathers corroborating public information to ground the assessment in evidence.</p></div>
+    </div>
+
+    <h3 style="font-size:22px;color:var(--forest);margin:42px 0 4px">The accountable human roles</h3>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:6px">Who directs the system and where their work sits on the automation scale.</p>
+    <div class="persona">
+      <div class="row head"><div class="cell">Persona</div><div class="cell">Tasks the platform enables</div><div class="cell">Automation</div></div>
+      <div class="row"><div class="cell"><span class="pname">Business Lead</span><span class="ptag">Engagement owner · buyer</span></div><div class="cell"><ul><li>Describe a new engagement in plain language; let ProAssess do the rest</li><li>Answer the IRQ and upload supporting documents</li><li>Track their own engagements and assessment status</li></ul></div><div class="cell"><div class="mini-flags"><span class="mini auto">Autonomous intake</span><span class="mini gate">Owns answers</span></div></div></div>
+      <div class="row"><div class="cell"><span class="pname">TPRM Assessor</span><span class="ptag">Risk analyst · vrm</span></div><div class="cell"><ul><li>Review and challenge IRQ answers across six domains (CLS 1–5)</li><li>Examine the assessment dossier — scope, inherent, controls, residual</li><li>Raise findings and drive remediation</li></ul></div><div class="cell"><div class="mini-flags"><span class="mini assist">AI-drafted review</span><span class="mini gate">Owns challenge</span></div></div></div>
+      <div class="row"><div class="cell"><span class="pname">VRM Lead</span><span class="ptag">Risk management · leadership</span></div><div class="cell"><ul><li>Designate vendor and engagement criticality (authoritative override)</li><li>Approve assessments at the review gate</li><li>Read portfolio, concentration and supply-chain dashboards</li></ul></div><div class="cell"><div class="mini-flags"><span class="mini auto">Auto analytics</span><span class="mini gate">Owns decisions</span></div></div></div>
+      <div class="row"><div class="cell"><span class="pname">Sourcing / Procurement Head</span><span class="ptag">Category &amp; spend</span></div><div class="cell"><ul><li>Maintain the vendor master — segmentation, spend band, substitutability</li><li>Generate minimum contract terms scaled to risk; run gap reviews</li><li>Manage the contract estate against engagements</li></ul></div><div class="cell"><div class="mini-flags"><span class="mini assist">AI term-drafting</span><span class="mini gate">Owns negotiation</span></div></div></div>
+      <div class="row"><div class="cell"><span class="pname">Vendor</span><span class="ptag">External counterparty</span></div><div class="cell"><ul><li>Respond to scoped due-diligence questionnaires</li><li>Provide certificates and evidence for automatic reading</li></ul></div><div class="cell"><div class="mini-flags"><span class="mini auto">Auto evidence read</span><span class="mini gate">Owns submissions</span></div></div></div>
+      <div class="row"><div class="cell"><span class="pname">Executive / Board</span><span class="ptag">Oversight</span></div><div class="cell"><ul><li>Ask the portfolio questions in natural language (grounded answers)</li><li>Consume residual distribution, critical exposure and concentration views</li><li>Rely on the tamper-evident audit trail for assurance</li></ul></div><div class="cell"><div class="mini-flags"><span class="mini auto">Fully automated</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. LIFECYCLE ============ -->
+<section id="lifecycle">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">03</span><h2>End-to-end vendor lifecycle</h2></div>
+    <p class="sec-sub">The complete journey of a third party through the firm — ten stages from identification to exit.
+      Each stage shows the system capability, the agents at work and its automation flag. The pattern is consistent:
+      <strong>the analysis is automated; the accountable decisions are gated.</strong></p>
+
+    <div class="index-bar">
+      <div class="ib auto"><div class="n">6</div><div class="l">Autonomous stages</div><div class="d">Run end-to-end by the system with no manual effort.</div></div>
+      <div class="ib assist"><div class="n">2</div><div class="l">AI-assisted stages</div><div class="d">AI produces the work; a human confirms it.</div></div>
+      <div class="ib gate"><div class="n">2</div><div class="l">Human-gated stages</div><div class="d">Accountable decisions a named owner must make.</div></div>
+    </div>
+
+    <div class="flow">
+      <div class="stage auto"><div class="num"><span>1</span></div><div class="body al">
+        <div class="st-top"><h4>Identification &amp; intake</h4><span class="badge auto">Autonomous</span></div>
+        <p>A business need is described in plain language or dropped in as documents. ProAssess matches an existing vendor or creates a new one (with a duplicate guard) and opens the engagement — no forms to fill.</p>
+        <div class="meta"><span><b>Capability</b> ProAssess · BRO Chat · duplicate guard</span><span><b>Agents</b> <span class="agent-chip">Bro</span><span class="agent-chip">Sara</span><span class="agent-chip">Rex</span></span></div>
+      </div></div>
+
+      <div class="stage auto"><div class="num"><span>2</span></div><div class="body al">
+        <div class="st-top"><h4>Inherent risk &amp; rating</h4><span class="badge auto">Autonomous</span></div>
+        <p>The inherent questionnaire is interpreted and exposure scored across eight domains, weighted, to a defensible inherent band — reproducible and model-independent.</p>
+        <div class="meta"><span><b>Capability</b> IRQ · inherent scoring engine</span><span><b>Agents</b> <span class="agent-chip">Bro</span><span class="agent-chip">Sara</span></span></div>
+      </div></div>
+
+      <div class="stage auto"><div class="num"><span>3</span></div><div class="body al">
+        <div class="st-top"><h4>Control scoping</h4><span class="badge auto">Autonomous</span></div>
+        <p>The system selects exactly the due-diligence domains the inherent rating warrants — proportionate by design, so effort matches risk.</p>
+        <div class="meta"><span><b>Capability</b> proportionate scoping engine</span><span><b>Agents</b> <span class="agent-chip">Bro</span></span></div>
+      </div></div>
+
+      <div class="stage assist"><div class="num"><span>4</span></div><div class="body al">
+        <div class="st-top"><h4>Due diligence &amp; evidence</h4><span class="badge assist">AI-assisted</span></div>
+        <p>A scoped DDQ is generated; each specialist assesses its domain; uploaded certificates and reports are read automatically and filed. The assessor reviews and challenges the drafted findings.</p>
+        <div class="meta"><span><b>Capability</b> DDQ · certificate extraction · 8 domains</span><span><b>Agents</b> <span class="agent-chip">Isaac</span><span class="agent-chip">Rhea</span><span class="agent-chip">Priya</span><span class="agent-chip">Mira</span><span class="agent-chip">Connor</span><span class="agent-chip">Finn</span><span class="agent-chip">Elara</span></span></div>
+      </div></div>
+
+      <div class="stage gate"><div class="num"><span>5</span></div><div class="body al">
+        <div class="st-top"><h4>Residual risk &amp; decision</h4><span class="badge gate">Human-gated</span></div>
+        <p>Residual exposure is computed automatically — inherent reduced only by demonstrated controls — and a recommendation is issued. The accountable owner approves the decision at the review gate before it locks.</p>
+        <div class="meta"><span><b>Capability</b> residual engine · review queue · audit</span><span><b>Agents</b> <span class="agent-chip">Bro</span> → human sign-off</span></div>
+      </div></div>
+
+      <div class="stage assist"><div class="num"><span>6</span></div><div class="body al">
+        <div class="st-top"><h4>Contracting</h4><span class="badge assist">AI-assisted</span></div>
+        <p>Minimum terms are generated scaled to the inherent rating; an uploaded draft is read and gap-reviewed against them, inheriting the engagement’s risk. Sourcing negotiates and executes.</p>
+        <div class="meta"><span><b>Capability</b> contract terms · gap review · extraction</span><span><b>Agents</b> contract engine → sourcing</span></div>
+      </div></div>
+
+      <div class="stage gate"><div class="num"><span>7</span></div><div class="body al">
+        <div class="st-top"><h4>Onboarding &amp; criticality</h4><span class="badge gate">Human-gated</span></div>
+        <p>The vendor is onboarded into the master and enrolled for monitoring. Criticality is designated — the one authoritative judgement the system deliberately reserves for a named human.</p>
+        <div class="meta"><span><b>Capability</b> vendor master · criticality override · enrolment</span><span><b>Agents</b> risk lead</span></div>
+      </div></div>
+
+      <div class="stage auto"><div class="num"><span>8</span></div><div class="body al">
+        <div class="st-top"><h4>Continuous monitoring &amp; performance</h4><span class="badge auto">Autonomous</span></div>
+        <p>Cyber, financial, sanctions and breach signals are captured against the profile; performance scorecards run by period; concentration analytics update across the portfolio.</p>
+        <div class="meta"><span><b>Capability</b> monitoring signals · scorecards · concentration</span><span><b>Agents</b> <span class="agent-chip">Rex</span> + signal engines</span></div>
+      </div></div>
+
+      <div class="stage auto"><div class="num"><span>9</span></div><div class="body al">
+        <div class="st-top"><h4>Reassessment &amp; revalidation</h4><span class="badge auto">Autonomous</span></div>
+        <p>Certificate and assessment validity is tracked; expiry notices fire and issues open automatically as evidence lapses, pulling the engagement back into the cycle without manual chasing.</p>
+        <div class="meta"><span><b>Capability</b> revalidation engine · findings · notifications</span><span><b>Agents</b> scheduler</span></div>
+      </div></div>
+
+      <div class="stage assist"><div class="num"><span>10</span></div><div class="body al">
+        <div class="st-top"><h4>Offboarding &amp; exit</h4><span class="badge assist">AI-assisted</span></div>
+        <p>Exit-plan status and residual obligations are surfaced for an orderly wind-down; the full history remains in the tamper-evident audit trail. The owner confirms exit.</p>
+        <div class="meta"><span><b>Capability</b> exit posture · audit trail · reporting</span><span><b>Agents</b> <span class="agent-chip">Rhea</span> → owner</span></div>
+      </div></div>
+    </div>
+
+    <div class="callout">
+      <h3>The automation picture, stated honestly</h3>
+      <p>Across the ten-stage lifecycle, <span class="pct">eight of ten stages run with no manual analytical effort</span> — the system intakes, scores, scopes, drafts due diligence, computes residual, contracts, monitors and revalidates on its own. The two stages it does <em>not</em> automate are the two that governance and regulation require a named human to own: the <strong>final risk decision</strong> and the <strong>criticality designation</strong>. That is the design intent — total automation of the work, deliberate human accountability for the judgement — every step recorded in a hash-chained, tamper-evident trail.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="disc">
+      <p class="mono" style="color:var(--forest);font-weight:600;margin-bottom:8px">BRO · RISK ORACLE — CAPABILITY DOCUMENT</p>
+      <p style="font-size:12.5px">Prepared as a capability reference for the platform’s third-party risk management features. Automation
+      flags describe the system’s designed behaviour: analytical execution is automated, while accountable risk
+      decisions and criticality designations remain human-owned by design. Deterministic engines hold authoritative
+      scoring; AI specialists perform reading, drafting and correlation around them.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
