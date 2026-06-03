@@ -1,0 +1,16 @@
+# Render Blueprint — BRO Risk Oracle demonstrator (Docker).
+# The Dockerfile is self-locating and tolerates the project being nested in a
+# subfolder of the build context, so this should deploy without extra settings.
+# For the cleanest result, set rootDir to the folder that holds the Dockerfile.
+services:
+  - type: web
+    name: bro-risk-oracle
+    runtime: docker
+    plan: starter
+    # rootDir: tprm        # optional: set to the project subfolder if nested
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: BRO_DB_URL
+        value: sqlite:///bro_demo.db   # seeded demonstrator; use a Postgres URL for prod
+    healthCheckPath: /
